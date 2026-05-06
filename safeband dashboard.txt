@@ -1,0 +1,115 @@
+SafeBand Cloud Dashboard and ESP32 Socket.IO Requirements
+
+Goal
+Build a cloud-hosted real-time dashboard for the SafeBand wearable. The ESP32 must connect to the cloud server using Socket.IO and stream sensor data live. The dashboard should show the latest readings, worker online/offline status, and fall or heat alerts.
+
+Must-Have Requirements
+- Cloud backend must run on a public server and be reachable over HTTPS/WSS.
+- Use Socket.IO for real-time communication between ESP32 and server.
+- Dashboard must update live without page refresh.
+- Server must support multiple devices/workers.
+- Server must store or cache the latest telemetry per worker.
+- Server must expose worker connection status.
+- Server must mark a worker as offline if no telemetry is received for a configured timeout, such as 10 seconds.
+- Dashboard must show temperature, humidity, ax, ay, az, heat risk, fall status, worker ID, device type, and last seen time.
+- Dashboard must show an alert state immediately when a fall is detected.
+- Server must be secure enough for contest use, with basic authentication or token-based device identification if possible.
+
+ESP32 Requirements
+- ESP32 connects to WiFi first.
+- ESP32 then connects to the cloud Socket.IO server.
+- ESP32 must automatically reconnect if WiFi or Socket.IO disconnects.
+- ESP32 should emit telemetry every 3 to 5 seconds.
+- ESP32 should emit immediately when a fall or heat alert is detected.
+- ESP32 must send the following payload fields:
+  - worker_id
+  - device_type
+  - temperature
+  - humidity
+  - ax
+  - ay
+  - az
+  - fall_detected
+  - heat_risk
+  - timestamp
+- ESP32 should include a unique device ID or auth token in the connection handshake.
+- ESP32 should log connection status clearly over Serial.
+
+Socket.IO Event Contract
+- ESP32 to server:
+  - connect
+  - telemetry
+  - status_ping
+  - alert
+
+- Server to ESP32:
+  - connect_ack
+  - config_update
+  - force_reconnect if needed
+  - pong for ping support
+
+- Server to dashboard:
+  - telemetry_update
+  - worker_status_update
+  - alert_update
+
+Worker Online/Offline Logic
+- A worker is online if the server received telemetry or a ping within the last 10 seconds.
+- A worker is offline if no message is received within the timeout.
+- Dashboard should show:
+  - Online
+  - Offline
+  - Alert
+  - Last seen timestamp
+
+Cloud Dashboard Requirements
+- Host on a cloud VM or platform such as Render, Railway, Fly.io, DigitalOcean, AWS, or similar.
+- Must include:
+  - Socket.IO server
+  - dashboard frontend
+  - API endpoint for history or current state if needed
+- Dashboard should support:
+  - live status tile
+  - latest telemetry panel
+  - alert panel
+  - worker list if multiple devices are supported
+- Optional but recommended:
+  - chart history for temperature and humidity
+  - event log
+  - export/download data
+
+Data Storage
+At minimum:
+- Keep latest worker state in memory.
+Better:
+- Store telemetry in a database such as MongoDB, PostgreSQL, or SQLite depending on hosting.
+
+Security Requirements
+- Use HTTPS on the dashboard.
+- Use WSS for Socket.IO.
+- Protect the server with:
+  - device token
+  - worker ID validation
+  - CORS restrictions
+- Do not expose write endpoints publicly without authentication.
+
+Reliability Requirements
+- Automatic reconnect on both ESP32 and server side.
+- Heartbeat or ping-pong mechanism.
+- Graceful handling of missing sensor data.
+- No blocking logic on ESP32.
+- Server must tolerate duplicate reconnects and duplicate telemetry.
+
+Acceptance Criteria
+- ESP32 connects to WiFi and Socket.IO cloud server.
+- Dashboard opens in a browser and shows live sensor values.
+- Worker status changes to Offline after timeout.
+- Fall alert appears immediately on the dashboard.
+- Heat risk is visible on the dashboard.
+- Data keeps updating without manual refresh.
+
+Suggested Stack
+- Backend: Node.js + Express + Socket.IO
+- Frontend: React, Vue, or plain HTML/CSS/JS
+- Hosting: Render or Railway for quick contest deployment
+- Optional database: MongoDB Atlas or PostgreSQL

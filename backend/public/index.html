@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeBand Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">SafeBand Type A</p>
+        <h1>Local dashboard for live wearable telemetry</h1>
+        <p class="lede">
+          Temperature, humidity, motion, and fall alerts from the ESP32 appear here in real time.
+        </p>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Backend</span>
+        <strong id="backendState">Connecting...</strong>
+        <small id="backendMeta">Waiting for telemetry</small>
+      </div>
+      <div class="status-card worker-card">
+        <span class="status-label">Worker</span>
+        <strong id="workerState">Unknown</strong>
+        <small id="workerMeta">No telemetry received yet</small>
+      </div>
+    </section>
+
+    <section class="grid stats">
+      <article class="card accent-amber">
+        <span>Temperature</span>
+        <strong id="temperatureValue">--</strong>
+        <small id="temperatureTrend">No data yet</small>
+      </article>
+      <article class="card accent-cyan">
+        <span>Humidity</span>
+        <strong id="humidityValue">--</strong>
+        <small id="humidityTrend">No data yet</small>
+      </article>
+      <article class="card accent-green">
+        <span>Heat Risk</span>
+        <strong id="heatRiskValue">--</strong>
+        <small id="deviceValue">Device: --</small>
+      </article>
+      <article class="card accent-rose">
+        <span>Fall Alert</span>
+        <strong id="fallValue">--</strong>
+        <small id="workerValue">Worker: --</small>
+      </article>
+    </section>
+
+    <section class="grid split">
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Motion</h2>
+          <p>Accelerometer snapshot from the MPU6050</p>
+        </div>
+        <div class="motion-grid">
+          <div><span>ax</span><strong id="axValue">--</strong></div>
+          <div><span>ay</span><strong id="ayValue">--</strong></div>
+          <div><span>az</span><strong id="azValue">--</strong></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Latest Reading</h2>
+          <p id="timestampValue">No payload received yet</p>
+        </div>
+        <pre id="rawPayload">Waiting for the first POST from the ESP32...</pre>
+      </article>
+    </section>
+
+    <section class="panel logs">
+      <div class="panel-head">
+        <h2>Recent Events</h2>
+        <p>Newest telemetry appears first</p>
+      </div>
+      <div id="eventList" class="event-list"></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

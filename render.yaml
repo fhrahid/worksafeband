@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: safeband-dashboard
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
