@@ -8,66 +8,64 @@
 </head>
 <body>
   <main class="shell">
-    <section class="hero">
+    <header class="topbar">
       <div>
         <p class="eyebrow">SafeBand Type A</p>
-        <h1>Local dashboard for live wearable telemetry</h1>
+        <h1>Multi-worker live dashboard</h1>
         <p class="lede">
-          Temperature, humidity, motion, and fall alerts from the ESP32 appear here in real time.
+          Clean, light, real-time monitoring for temperature, humidity, gas, fall, and motion telemetry.
         </p>
       </div>
-      <div class="status-card">
-        <span class="status-label">Backend</span>
-        <strong id="backendState">Connecting...</strong>
-        <small id="backendMeta">Waiting for telemetry</small>
+      <div class="topbar-actions">
+        <div class="pill pill-healthy"><span class="dot"></span><span id="backendState">Backend online</span></div>
+        <div class="pill"><span class="dot dot-blue"></span><span id="backendMeta">Waiting for telemetry</span></div>
       </div>
-      <div class="status-card worker-card">
-        <span class="status-label">Worker</span>
+    </header>
+
+    <section class="hero-grid">
+      <article class="hero-card hero-card-primary">
+        <div class="hero-card-header">
+          <span class="section-label">Workers</span>
+          <strong id="workerSummaryCount">0 online / 0 total</strong>
+        </div>
+        <div id="workerSummaryList" class="worker-summary-list"></div>
+      </article>
+
+      <aside class="hero-card hero-card-side">
+        <span class="section-label">Selected worker</span>
         <strong id="workerState">Unknown</strong>
         <small id="workerMeta">No telemetry received yet</small>
-      </div>
+        <div class="stacked-metrics">
+          <div><span>Temperature</span><strong id="temperatureValue">--</strong></div>
+          <div><span>Humidity</span><strong id="humidityValue">--</strong></div>
+          <div><span>Gas</span><strong id="gasValue">--</strong></div>
+          <div><span>Heat Risk</span><strong id="heatRiskValue">--</strong></div>
+        </div>
+      </aside>
     </section>
 
-    <section class="grid stats">
-      <article class="card accent-amber">
-        <span>Temperature</span>
-        <strong id="temperatureValue">--</strong>
-        <small id="temperatureTrend">No data yet</small>
-      </article>
-      <article class="card accent-cyan">
-        <span>Humidity</span>
-        <strong id="humidityValue">--</strong>
-        <small id="humidityTrend">No data yet</small>
-      </article>
-      <article class="card accent-green">
-        <span>Heat Risk</span>
-        <strong id="heatRiskValue">--</strong>
-        <small id="deviceValue">Device: --</small>
-      </article>
-      <article class="card accent-rose">
-        <span>Fall Alert</span>
-        <strong id="fallValue">--</strong>
-        <small id="workerValue">Worker: --</small>
-      </article>
+    <section class="stats-grid">
+      <article class="stat-card"><span>Fall Alert</span><strong id="fallValue">--</strong><small id="workerValue">Worker: --</small></article>
+      <article class="stat-card"><span>Device</span><strong id="deviceValue">--</strong><small id="timestampValue">No payload received yet</small></article>
+      <article class="stat-card"><span>Motion X</span><strong id="axValue">--</strong><small>Accelerometer axis</small></article>
+      <article class="stat-card"><span>Motion Y</span><strong id="ayValue">--</strong><small>Accelerometer axis</small></article>
+      <article class="stat-card"><span>Motion Z</span><strong id="azValue">--</strong><small>Accelerometer axis</small></article>
+      <article class="stat-card"><span>Gas Raw</span><strong id="gasRawValue">--</strong><small id="gasTrend">AO sensor reading</small></article>
     </section>
 
-    <section class="grid split">
+    <section class="content-grid">
       <article class="panel">
         <div class="panel-head">
-          <h2>Motion</h2>
-          <p>Accelerometer snapshot from the MPU6050</p>
+          <h2>Worker status</h2>
+          <p>Two demo workers appear here with live online/offline state.</p>
         </div>
-        <div class="motion-grid">
-          <div><span>ax</span><strong id="axValue">--</strong></div>
-          <div><span>ay</span><strong id="ayValue">--</strong></div>
-          <div><span>az</span><strong id="azValue">--</strong></div>
-        </div>
+        <div id="workerGrid" class="worker-grid"></div>
       </article>
 
       <article class="panel">
         <div class="panel-head">
-          <h2>Latest Reading</h2>
-          <p id="timestampValue">No payload received yet</p>
+          <h2>Latest reading</h2>
+          <p>Raw payload from the selected worker.</p>
         </div>
         <pre id="rawPayload">Waiting for the first POST from the ESP32...</pre>
       </article>
@@ -75,8 +73,8 @@
 
     <section class="panel logs">
       <div class="panel-head">
-        <h2>Recent Events</h2>
-        <p>Newest telemetry appears first</p>
+        <h2>Recent events</h2>
+        <p>Newest telemetry appears first.</p>
       </div>
       <div id="eventList" class="event-list"></div>
     </section>
