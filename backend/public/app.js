@@ -24,9 +24,6 @@ const els = {
   gasValue: document.getElementById('gasValue'),
   gasRawValue: document.getElementById('gasRawValue'),
   gasTrend: document.getElementById('gasTrend'),
-  axValue: document.getElementById('axValue'),
-  ayValue: document.getElementById('ayValue'),
-  azValue: document.getElementById('azValue'),
   timestampValue: document.getElementById('timestampValue'),
   workerSummaryCount: document.getElementById('workerSummaryCount'),
   workerSummaryList: document.getElementById('workerSummaryList'),
@@ -110,9 +107,6 @@ function selectWorker(workerId) {
   els.gasValue.textContent = selected.gas_detected ? 'DETECTED' : 'NORMAL';
   els.gasRawValue.textContent = `${formatNumber(selected.gas_raw, 0)}`;
   els.gasTrend.textContent = selected.gas_detected ? 'Gas alert active' : 'AO sensor reading';
-  els.axValue.textContent = `${formatNumber(selected.ax, 3)} g`;
-  els.ayValue.textContent = `${formatNumber(selected.ay, 3)} g`;
-  els.azValue.textContent = `${formatNumber(selected.az, 3)} g`;
   els.timestampValue.textContent = selected.timestamp || '--';
   els.rawPayload.textContent = JSON.stringify(selected, null, 2);
 }
@@ -129,7 +123,7 @@ function renderWorkers() {
   }
 
   els.workerSummaryList.innerHTML = workers.map((worker) => `
-    <button class="worker-summary-item ${state.selectedWorkerId === worker.worker_id ? 'active' : ''}" data-worker-id="${worker.worker_id}">
+    <button class="worker-summary-item ${state.selectedWorkerId === worker.worker_id ? 'active' : ''} ${statusLabel(worker)}" data-worker-id="${worker.worker_id}">
       <div>
         <strong>${worker.worker_id}</strong>
         <div class="meta">${worker.device_type || 'FULL'} • ${worker.heat_risk || 'NORMAL'}</div>
@@ -143,7 +137,7 @@ function renderWorkers() {
   `).join('');
 
   els.workerGrid.innerHTML = workers.map((worker) => `
-    <button class="worker-card ${state.selectedWorkerId === worker.worker_id ? 'active-card' : ''}" data-worker-id="${worker.worker_id}">
+    <button class="worker-card ${state.selectedWorkerId === worker.worker_id ? 'active-card' : ''} ${statusLabel(worker)}" data-worker-id="${worker.worker_id}">
       <div>
         <strong>${worker.worker_id}</strong>
         <div class="subtle">${worker.device_type || 'FULL'} • Last seen ${formatAge(worker.age_ms)}</div>
@@ -198,9 +192,6 @@ function renderLatest() {
   els.gasValue.textContent = latest.gas_detected ? 'DETECTED' : 'NORMAL';
   els.gasRawValue.textContent = `${formatNumber(latest.gas_raw, 0)}`;
   els.gasTrend.textContent = latest.gas_detected ? 'Gas alert active' : 'AO sensor reading';
-  els.axValue.textContent = `${formatNumber(latest.ax, 3)} g`;
-  els.ayValue.textContent = `${formatNumber(latest.ay, 3)} g`;
-  els.azValue.textContent = `${formatNumber(latest.az, 3)} g`;
   els.timestampValue.textContent = latest.timestamp || '--';
   els.rawPayload.textContent = JSON.stringify(latest, null, 2);
   updateWorkerStatus();
@@ -221,7 +212,7 @@ function renderHistory() {
         <time>${item.received_at || item.timestamp || '--'}</time>
         <div>
           <strong>${item.worker_id || 'unknown'} • ${item.device_type || 'FULL'}</strong>
-          <div class="meta">${formatNumber(item.temperature)} °C | ${formatNumber(item.humidity)} % | ax ${formatNumber(item.ax, 3)} g</div>
+          <div class="meta">${formatNumber(item.temperature)} °C | ${formatNumber(item.humidity)} %</div>
         </div>
         <span class="badge ${badge}">${label}</span>
       </article>
